@@ -48,6 +48,7 @@ class UI {
     const cardTitle = document.querySelector('.card-title');
     // Get button
     const btn = document.querySelector('form button');
+
     // Disabled btn
     btn.disabled = true;
 
@@ -141,11 +142,8 @@ document.forms['addBookForm'].addEventListener('submit', function (e) {
     store.addBook(book);
   }
 
-  //Clear form on submit
-  const inputs = this.elements['book-input'];
-  for (let i = 0; i < inputs.length; i++) {
-      inputs[i].value = '';
-  }
+    this.reset();
+    Materialize.updateTextFields();
 });
 
 
@@ -160,8 +158,10 @@ document.querySelector('.book-list tbody').addEventListener('click', function (e
     const id = parent.children[2].textContent;
 
     if (e.target.classList.contains('remove-button')) {
-        ui.removeBook(parent); // не знаю нужно ли так выносить в метод с 1 строкой
-        ui.showAlert('Book removed', 'success');
+        ui.removeBook(parent); 
         store.removeBook(id);
+        ui.showAlert('Book removed', 'success');
   }
 });
+
+
