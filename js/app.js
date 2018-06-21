@@ -33,8 +33,14 @@ class UI {
 
 
   showAlert(message, type) {
+      const currentAlert = document.querySelector(".alert");
 
-    // Create markup
+      if (currentAlert) {
+          currentAlert.remove();
+          clearTimeout(this.timeout);
+      }
+
+      // Create markup
     const alert = `
       <div class="card alert ${type === 'error' ? 'red' : 'green'}">
         <div class="card-content white-text">
@@ -80,7 +86,7 @@ class Store {
     const books = this.getBooks();
     // Add new book
     books.unshift(book);
-    // Save localstorage
+    // Save localstorage;
     localStorage.setItem('books', JSON.stringify(books));
     // 1. Получаем из хранилища книги
     // 2. Перегоняем их из json в обычный массив
@@ -127,12 +133,15 @@ document.forms['addBookForm'].addEventListener('submit', function (e) {
   const ui = new UI();
   // Get Store
   const store = new Store();
-
+  const books = store.getBooks();
 
   // Validate
   if (title === '' || author === '' || id === '') {
     // Show error
     ui.showAlert('Please fill in all fields', 'error');
+    // если одна книга из списка имеет такой же id как и новая книга
+  } else if (books.some(oldBook => oldBook.id === id)) {
+      ui.showAlert('Book with this ID is already exist', 'error');
   } else {
     // Add book to ui
     ui.addBookToList(book);
@@ -141,12 +150,12 @@ document.forms['addBookForm'].addEventListener('submit', function (e) {
     // Add book to localstorage
     store.addBook(book);
   }
-
+    // clear form's inputs
     this.reset();
     Materialize.updateTextFields();
 });
 
-
+// remove book from list and localstorage
 document.querySelector('.book-list tbody').addEventListener('click', function (e) {
     // Get Store
     const store = new Store();
@@ -163,5 +172,3 @@ document.querySelector('.book-list tbody').addEventListener('click', function (e
         ui.showAlert('Book removed', 'success');
   }
 });
-
-
